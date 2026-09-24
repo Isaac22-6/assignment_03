@@ -13,6 +13,7 @@ import os
 
 import pytest
 
+
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 import sys  # noqa: E402  (the path change belongs with the explanation above)
