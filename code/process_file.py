@@ -14,58 +14,33 @@ Run it:  Run and Debug -> "Streamlit Run: Current File"   (see README Reference 
 Test it: pytest tests/test_streamlit.py -k process_file
 """
 
-# --- The page ---------------------------------------------------------------------
-#
-# Less scaffolding this time. The steps are described, but which widget and which
-# function does each job — and what to call the result — is now yours to work out.
-# `one_package.py` is your worked example for anything structural, and README
-# Reference #4 and #5 cover the two things that are new here.
-import streamlit as st
 import json
-from packaging_parser import calc_total_units, parse_packaging, get_unit
 
-# TODO: imports — streamlit, json, and what you need from packaging_parser.
+import streamlit as st
+from packaging_parser import calc_total_units, get_unit, parse_packaging
 
+st.title("Process File of Packages")
 
-# TODO: the title, exactly:   Process File of Packages
-st.title('Process File of Packages')
+uploaded_file = st.file_uploader("Upload package file:", key="package_file")
 
-# TODO: a file uploader, key="package_file". Like the text box in Part 1 it returns
-#       a value — None until a file has been chosen — so the same kind of guard
-#       goes around everything below.
-file = st.file_uploader("Upload package file:", key= "package_file" )
-parsed_list=[]
-if file is not None:
-    text = file.getvalue().decode("utf-8")    # bytes -> str
-    for line in text.splitlines():                      # one str per line
+if uploaded_file is not None:
+    text = uploaded_file.getvalue().decode("utf-8")
+    packages = []
+
+    for line in text.splitlines():
         line = line.strip()
-        if not line:                                    # the empty line after the final newline
+        if not line:
             continue
-        parsed_line= parse_packaging(line)
-        parsed_list.append(parsed_line)
-        total= calc_total_units(parsed_line)
-        unit = get_unit(parsed_line)
-        st.info(f"{line}➡️ Total 📦Size: {total} {unit} ")
-# 1. Bytes to text. The upload is bytes; decode it, then split it into lines.
-# TODO
-with open("data/packaging1.json",'w') as json_file:
-    json.dump(parsed_list, json_file, indent =4)
 
-st.success(f'{len(parsed_list)} psckages written to data/packaging1.json')
+        package = parse_packaging(line)
+        packages.append(package)
 
-# 2. Every line: strip it, SKIP IT IF IT IS BLANK, parse it, keep the parsed package
-#    in a list, and show the line with its total. Match this layout:
-#
-#        12 eggs in 1 carton / 3 cartons in 1 box ➡️ Total 📦 Size: 36 eggs
-# TODO
+        total = calc_total_units(package)
+        unit = get_unit(package)
+        st.info(f"{line} ➡️ Total 📦 Size: {total} {unit}")
 
+    file_name = uploaded_file.name.replace(".txt", ".json")
+    with open(f"data/{file_name}", "w", encoding="utf-8") as json_file:
+        json.dump(packages, json_file, indent=4)
 
-# 3. Write the list of parsed packages to data/<name>.json with json.dump, where
-#    <name> is the uploaded file's name with .txt replaced by .json.
-# TODO
-
-
-# 4. Say what happened, exactly:
-#
-#        3 packages written to data/packaging1.json
-# TODO
+    st.success(f"{len(packages)} packages written to data/{file_name}")

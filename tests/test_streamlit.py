@@ -192,6 +192,7 @@ def test_process_files_waits_for_the_button():
     """Choosing a file is not processing it. Nothing changes until the button is clicked."""
     app = load_app(PROCESS_FILES)
     upload(app, "packaging1.txt", data_file("packaging1.txt"))
+    widget(app.button, "process", "button")
     app.run()
     no_exception(app, PROCESS_FILES)
 
