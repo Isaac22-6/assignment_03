@@ -1,5 +1,5 @@
 
-I learned how to use session state to matain values whenever my streamlit app reruns. When working in the process_files module,
+ learned how to use session state to matain values whenever my streamlit app reruns. When working in the process_files module,
 Session state allowed me to initialise multiple variables and accumulate numerical values after interacting with widgets, so I can track the files and packages extracted 
 in metric cards. A step I can take to improve how I use session state is to incorporate live data when making Streamlit apps, so I can
 practice tracking and storing data during reruns of my Streamlit app.
